@@ -1,5 +1,5 @@
 # Disaster Response Pipeline Project
-<img src = "figures/emergency2.jpg?raw=true" >
+<img src = "figures/emergency.jpg?raw=true" >
 
 # Project description
 
