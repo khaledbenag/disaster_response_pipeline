@@ -65,6 +65,8 @@ def clean_data(df):
         categories[column] = categories[column].astype(str).str[-1]
         # convert column from string to numeric
         categories[column] = categories[column].astype('int')
+        # binarize output (remove 2)
+        categories[column]=categories[column].mask(categories[column] > 1,1).astype('int')
     # drop the original categories column from `df`
     df.drop(['categories'], axis = 1, inplace = True)
     # concatenate the original dataframe with the new `categories` dataframe
@@ -73,7 +75,7 @@ def clean_data(df):
     df.drop_duplicates(inplace=True)
     # drop nan values 
     #TODO: impute missing values
-    df.dropna(inplace = True)
+    df[category_colnames] = df[category_colnames].fillna(0)
     return df
 
 
@@ -94,7 +96,7 @@ def save_data(df, database_filename):
 
     """
     engine = create_engine('sqlite:///{}'.format(database_filename))
-    df.to_sql('DisasterTable', engine, index=False)  
+    df.to_sql('DisasterTable', engine, if_exists='replace', index=False)  
 
 
 def main():

@@ -88,7 +88,7 @@ def build_model():
     Returns
     -------
     pipeline : sklearn object
-        scklearn pipeline.
+        scklearn gridSearch optimisation object.
 
     """
     pipeline = Pipeline([
@@ -96,7 +96,16 @@ def build_model():
         ('tfidf', TfidfTransformer()),
         ('clf', MultiOutputClassifier(RandomForestClassifier()))
     ])
-    return pipeline
+    
+    # add grid search optimization
+    # parameters can be ploted using pipeline.get_params().
+    parameters = {
+        #'clf__estimator__n_estimators': [20, 50],
+        'clf__estimator__max_features': [10, 'auto'],
+    }
+    
+    cv = GridSearchCV(pipeline, param_grid=parameters)
+    return cv
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
@@ -167,7 +176,7 @@ def main():
         evaluate_model(model, X_test, Y_test, category_names)
 
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
-        save_model(model, model_filepath)
+        save_model(model.best_estimator_, model_filepath)
 
         print('Trained model saved!')
 

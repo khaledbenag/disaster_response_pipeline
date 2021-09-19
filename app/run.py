@@ -10,6 +10,7 @@ from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
 import joblib
 from sqlalchemy import create_engine
+import numpy as np
 
 app = Flask(__name__)
 
@@ -51,20 +52,24 @@ model = joblib.load("../models/classifier.pkl")
 @app.route('/index')
 def index():
     
-    # extract data needed for visuals
-    # TODO: Below is an example - modify to extract data for your own visuals
-    genre_counts = df.groupby('genre').count()['message']
-    genre_names = list(genre_counts.index)
+    # plot counts by genre
     
+    genre_labels, genre_count = np.unique(df['genre'].values, return_counts=True)
     
-    # create visuals
-    # TODO: Below is an example - modify to create your own visuals
+    # plot counts by column
+    counts = df.iloc[:, 4:].sum()
+
+    # plot how many messages shares the same number of labels
+    messages_per_row = df.iloc[:,4:].sum(axis = 1)
+    messages_counts,n = np.unique(messages_per_row, return_counts= True)
+
+
     graphs = [
         {
             'data': [
                 Bar(
-                    x=genre_names,
-                    y=genre_counts
+                    x=genre_labels,
+                    y=genre_count
                 )
             ],
 
@@ -77,9 +82,44 @@ def index():
                     'title': "Genre"
                 }
             }
+        },
+        {
+            'data': [
+                Bar(
+                    x=counts.index,
+                    y=counts.values
+                )
+            ],
+
+            'layout': {
+                'title': 'Message Categories distribution',
+                'yaxis': {
+                    'title': "Count (messages)"
+                },
+                'xaxis': {
+                    'title': "Categories"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x= messages_counts,
+                    y= n
+                )
+            ],
+
+            'layout': {
+                'title': 'Number of messages based on shared labels ',
+                'yaxis': {
+                    'title': "Count (messages)"
+                },
+                'xaxis': {
+                    'title': "Messages distribution by shared labels"
+                }
+            }
         }
     ]
-    
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
     graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
