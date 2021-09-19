@@ -1,6 +1,6 @@
 # Disaster Response Pipeline Project
 <img src = "figures/emergency.jpg?raw=true" >
-In this project, data engineering skills are applied to analyze disaster data and build a model for an API that classifies real messages sent during disaster events. A machine learning pipeline for text processing and multi-output classification is developed to classify these events in order to send the messages to an appropriate relief agency. Finally, a Flask application is designed to help an emergency worker to get classification results in multiple categories for a given message.
+In this project, data engineering skills are applied to analyze disaster data and build a model for an API that classifies real messages sent during disaster events. A machine learning pipeline for text processing and multi-output classification is developed to classify these events in order to send the messages to an appropriate emergency agency. Finally, a Flask application is designed to help an emergency worker to get classification results in multiple categories for a given message.
 
 # Requirements
  * Flask==2.0.1
