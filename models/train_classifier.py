@@ -23,6 +23,25 @@ from sklearn.model_selection import GridSearchCV
 import joblib
 
 def load_data(database_filepath):
+    """
+    load data from SQL database, and split it into X, y. Note that the table
+    name is set to: DisasterTable.  
+
+    Parameters
+    ----------
+    database_filepath : str 
+        the path to the SQL database.
+
+    Returns
+    -------
+    X : pandas serie
+        messages data used as our model input.
+    y : pandas dataframe
+        categories used our model labels.
+    category_names : str
+        list of categories names.
+
+    """
     # load data from database
     engine = create_engine('sqlite:///{}'.format(database_filepath))
     df = pd.read_sql_table('DisasterTable', con = engine)
@@ -34,6 +53,21 @@ def load_data(database_filepath):
 
 
 def tokenize(text):
+    """
+    function to process the messages text, normalization, remove stop words,
+    then word lemmatization.
+
+    Parameters
+    ----------
+    text : str
+        message text.
+
+    Returns
+    -------
+    cleaned_tokens : str
+        cleaned message.
+
+    """
     # Normilize text
     text = re.sub(r"[^a-zA-Z0-9]", " ", text.lower())
     # tokenize
@@ -47,6 +81,16 @@ def tokenize(text):
 
 
 def build_model():
+    """
+    function to build a pipeline for multi-output classification using 
+    RandomForest classifier.
+
+    Returns
+    -------
+    pipeline : sklearn object
+        scklearn pipeline.
+
+    """
     pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
         ('tfidf', TfidfTransformer()),
@@ -56,6 +100,26 @@ def build_model():
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
+    """
+    model evaluation using test data. This function plots the results for 
+    each label. 
+
+    Parameters
+    ----------
+    model : sklearn object
+        sklearn pipeline.
+    X_test : pandas dataframe
+        cleaned messages test data.
+    Y_test : pandas dataframe
+        test ground truth used to compare prediction results.
+    category_names : str
+        labels names.
+
+    Returns
+    -------
+    None.
+
+    """
     y_pred = pd.DataFrame(model.predict(X_test), columns= category_names)
     # plot the prediction score of each output
     for col in category_names:
@@ -66,6 +130,22 @@ def evaluate_model(model, X_test, Y_test, category_names):
 
 
 def save_model(model, model_filepath):
+    """
+    function to save the trained model in a pickle format.
+
+    Parameters
+    ----------
+    model : sklearn object
+        trained sklearn pipeline.
+    model_filepath : str
+        path to save the model. Example: "trained_model.pkl".
+
+    Returns
+    -------
+    None.
+
+    """
+
     joblib.dump(model, model_filepath)
     
 

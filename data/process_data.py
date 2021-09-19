@@ -9,6 +9,22 @@ import nltk
 from sqlalchemy import create_engine
 
 def load_data(messages_filepath, categories_filepath):
+    """
+    this function loads messages and categories data from a csv files.
+    
+    Parameters
+    ----------
+        messages_filespath : str
+            the path to the messages csv file.
+        categories_filepath : str
+            the path to the categories csv file.
+    
+    Returns
+    -------
+        df : pandas dataframe
+            the concatenation of messages and categories on "id".
+    
+    """
     # load messages dataset
     messages = pd.read_csv(messages_filepath)
     # load categories dataset
@@ -20,6 +36,21 @@ def load_data(messages_filepath, categories_filepath):
 
 
 def clean_data(df):
+    """
+    this function cleans the df data to create 36 labels from categories, 
+    convert columns values to numeric and drop nan and duplicates values.
+
+    Parameters
+    ----------
+    df : pandas dataframe
+        the messages and categories data in one file to be cleaned.
+
+    Returns
+    -------
+    df : pandas dataframe
+        a cleaned dataframe.
+
+    """
     # split categories
     categories = df.categories.str.split(';', expand = True)
     # select the first row of the categories dataframe
@@ -47,12 +78,34 @@ def clean_data(df):
 
 
 def save_data(df, database_filename):
-    """save data in sql database"""
+    """
+    function to save data in sql database
+
+    Parameters
+    ----------
+    df : pandas dataframe
+        the dataset to be saved.
+    database_filename : str
+        the path where sql database is saved.
+
+    Returns
+    -------
+    None.
+
+    """
     engine = create_engine('sqlite:///{}'.format(database_filename))
     df.to_sql('DisasterTable', engine, index=False)  
 
 
 def main():
+    """
+    main function
+
+    Returns
+    -------
+    None.
+
+    """
     if len(sys.argv) == 4:
 
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]

@@ -11,10 +11,23 @@ from plotly.graph_objs import Bar
 import joblib
 from sqlalchemy import create_engine
 
-
 app = Flask(__name__)
 
 def tokenize(text):
+    """
+    function to process text 
+
+    Parameters
+    ----------
+    text : str
+        message to be processed.
+
+    Returns
+    -------
+    clean_tokens : str
+        processed message.
+
+    """
     tokens = word_tokenize(text)
     lemmatizer = WordNetLemmatizer()
 
@@ -42,6 +55,7 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+    
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
