@@ -7,3 +7,4 @@ numpy==1.19.5
 SQLAlchemy==1.4.23
 scikit_learn==0.24.2
 gunicorn==20.1.0 
+psycopg2-binary==2.9.1
