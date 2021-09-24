@@ -179,6 +179,7 @@ def main():
         save_model(model.best_estimator_, model_filepath)
 
         print('Trained model saved!')
+        print("Done")
 
     else:
         print('Please provide the filepath of the disaster messages database '\
